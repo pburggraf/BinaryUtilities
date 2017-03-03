@@ -82,8 +82,21 @@ class Integer extends AbstractDataType
      */
     public function write(int $data): void
     {
+        $bytes = $this->splitBytes($data);
+
+        $bytes = $this->endianMode->applyEndianess($bytes);
+
         $this->assertNotEndOfFile();
-        $this->setByte($this->offset++, $data);
+        $this->setByte($this->offset++, $bytes[0]);
+
+        $this->assertNotEndOfFile();
+        $this->setByte($this->offset++, $bytes[1]);
+
+        $this->assertNotEndOfFile();
+        $this->setByte($this->offset++, $bytes[2]);
+
+        $this->assertNotEndOfFile();
+        $this->setByte($this->offset++, $bytes[3]);
     }
 
     /**
@@ -97,9 +110,38 @@ class Integer extends AbstractDataType
         $startBytePosition = $this->offset;
 
         for ($i = $this->offset; $i <= $this->offset - 1 + $dataLength; ++$i) {
+            $bytes = $this->splitBytes($data[$i - $startBytePosition]);
+
             $this->assertNotEndOfFile();
-            $this->setByte($this->offset++, $data[$i - $startBytePosition]);
+            $this->setByte($this->offset++, $bytes[0]);
+
+            $this->assertNotEndOfFile();
+            $this->setByte($this->offset++, $bytes[1]);
+
+            $this->assertNotEndOfFile();
+            $this->setByte($this->offset++, $bytes[2]);
+
+            $this->assertNotEndOfFile();
+            $this->setByte($this->offset++, $bytes[3]);
+
         }
+    }
+
+    /**
+     * @param int $data
+     *
+     * @return array
+     */
+    public function splitBytes(int $data): array
+    {
+        $bytes = [];
+
+        $bytes[] = ($data & 0xff000000) >> 24;
+        $bytes[] = ($data & 0x00ff0000) >> 16;
+        $bytes[] = ($data & 0x0000ff00) >> 8;
+        $bytes[] = ($data & 0x000000ff);
+
+        return $bytes;
     }
 
     /**

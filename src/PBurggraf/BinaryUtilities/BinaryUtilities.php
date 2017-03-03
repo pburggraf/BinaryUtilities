@@ -204,6 +204,7 @@ class BinaryUtilities
 
         $dataType->setContent($this->content);
         $dataType->setOffset($this->offset);
+        $dataType->setEndianMode($this->getEndianType($this->endian));
 
         $dataType->write($data);
 

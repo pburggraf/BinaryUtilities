@@ -6,6 +6,7 @@ use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\DataType\Byte;
 use PBurggraf\BinaryUtilities\DataType\Integer;
 use PBurggraf\BinaryUtilities\DataType\Short;
+use PBurggraf\BinaryUtilities\EndianType\BigEndian;
 use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
@@ -202,6 +203,64 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals([17, 8755, 17493], $short);
     }
 
+    public function testWriteFirstSingleShortBigEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->write(Short::class, 0xa0b0)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->read(Short::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals([0xa0b0], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
+
+    public function testWriteFirstThreeShortBigEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->write(Short::class, 0xa0b0)
+            ->write(Short::class, 0xa1b1)
+            ->write(Short::class, 0xa2b2)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->read(Short::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0b0, 0xa1b1, 0xa2b2], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
+
 
     public function testReadShortLittleEndian()
     {
@@ -244,6 +303,92 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals([4352, 13090, 21828], $short);
     }
 
+    public function testWriteFirstSingleShortLittleEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->setEndian(LittleEndian::class)
+            ->write(Short::class, 0xa0b0)
+            ->save();
+
+
+        $binaryUtility = new BinaryUtilities();
+        $shortArray = $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->setEndian(LittleEndian::class)
+            ->read(Short::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $shortArray);
+        static::assertEquals([0xa0b0], $shortArray);
+
+
+        $binaryUtility = new BinaryUtilities();
+        $shortArray = $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->setEndian(BigEndian::class)
+            ->read(Short::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $shortArray);
+        static::assertEquals([0xb0a0], $shortArray);
+
+        unlink($binaryFileCopy);
+    }
+
+    public function testWriteFirstThreeShortLittleEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->write(Short::class, 0xa0b0)
+            ->write(Short::class, 0xa1b1)
+            ->write(Short::class, 0xa2b2)
+            ->save();
+
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0b0, 0xa1b1, 0xa2b2], $byteArray);
+
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(BigEndian::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xb0a0, 0xb1a1, 0xb2a2], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
 
 
     public function testReadFirstSingleIntegerBigEndian()
@@ -282,6 +427,64 @@ class BinaryUtilitiesTest extends TestCase
 
         static::assertCount(3, $int);
         static::assertEquals([1122867, 1146447479, 2291772091], $int);
+    }
+
+    public function testWriteFirstSingleIntegerBigEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->write(Integer::class, 0xa0b0c0d0)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals([0xa0b0c0d0], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
+
+    public function testWriteFirstThreeIntegerBigEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->write(Integer::class, 0xa0b0c0d0)
+            ->write(Integer::class, 0xa1b1c1d1)
+            ->write(Integer::class, 0xa2b2c2d2)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
+
+        unlink($binaryFileCopy);
     }
 
 
@@ -324,5 +527,91 @@ class BinaryUtilitiesTest extends TestCase
 
         static::assertCount(3, $int);
         static::assertEquals([857870592, 2003195204, 3148519816], $int);
+    }
+
+    public function testWriteFirstSingleIntegerLittleEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->write(Integer::class, 0xa0b0c0d0)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals([0xa0b0c0d0], $byteArray);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(BigEndian::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals([0xd0c0b0a0], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
+
+    public function testWriteFirstThreeIntegerLittleEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->write(Integer::class, 0xa0b0c0d0)
+            ->write(Integer::class, 0xa1b1c1d1)
+            ->write(Integer::class, 0xa2b2c2d2)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(BigEndian::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xd0c0b0a0, 0xd1c1b1a1, 0xd2c2b2a2], $byteArray);
+
+        unlink($binaryFileCopy);
     }
 }
