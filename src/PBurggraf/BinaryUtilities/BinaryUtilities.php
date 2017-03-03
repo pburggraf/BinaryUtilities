@@ -1,12 +1,18 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace PBurggraf\BinaryUtilities;
 
+use PBurggraf\BinaryUtilities\DataType\AbstractDataType;
+use PBurggraf\BinaryUtilities\EndianType\AbstractEndianType;
+use PBurggraf\BinaryUtilities\EndianType\BigEndian;
+use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
-use PBurggraf\BinaryUtilities\Exception\UnsopportedEndianTypeException;
+use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
+use PBurggraf\BinaryUtilities\Exception\UnsupportedEndianTypeException;
 
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
@@ -15,9 +21,6 @@ class BinaryUtilities
 {
     const MODE_READ = 'read';
     const MODE_WRITE = 'write';
-
-    const ENDIAN_LITTLE = 'little';
-    const ENDIAN_BIG = 'big';
 
     const BASE_BINARY = 2;
     const BASE_OCTAL = 7;
@@ -52,7 +55,7 @@ class BinaryUtilities
     /**
      * @var array
      */
-    protected $buffer;
+    protected $buffer = [];
 
     /**
      * @var int
@@ -62,12 +65,17 @@ class BinaryUtilities
     /**
      * @var int
      */
-    protected $currentByte;
+    protected $offset = 0;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $endian = self::ENDIAN_BIG;
+    protected $endian;
+
+    /**
+     * @var AbstractDataType[]
+     */
+    protected $dataTypeClasses = [];
 
     /**
      * @param string $file
@@ -81,32 +89,22 @@ class BinaryUtilities
         if (!file_exists($file)) {
             throw new FileDoesNotExistsException();
         }
-
         $this->file = $file;
-
         $this->setContent();
 
         return $this;
     }
 
     /**
-     * @param int $mode
+     * @param string $mode
      *
      * @return BinaryUtilities
      */
-    public function endian(string $mode): BinaryUtilities
+    public function setEndian(string $mode): BinaryUtilities
     {
         $this->endian = $mode;
 
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function endOfFile(): int
-    {
-        return $this->endOfFile;
     }
 
     /**
@@ -118,19 +116,21 @@ class BinaryUtilities
      */
     public function offset(int $offset): BinaryUtilities
     {
-        $this->currentByte = $offset;
-
-        $this->assertNotEndOfFile();
+        $this->offset = $offset;
 
         return $this;
     }
 
     /**
      * @param int $base
+     *
+     * @return BinaryUtilities
      */
-    public function setBase(int $base = self::BASE_DECIMAL): void
+    public function setBase(int $base = self::BASE_DECIMAL): BinaryUtilities
     {
         $this->base = $base;
+
+        return $this;
     }
 
     /**
@@ -138,119 +138,119 @@ class BinaryUtilities
      */
     public function returnBuffer(): array
     {
-        return $this->buffer;
+        return array_map([$this, 'convertToBase'], $this->buffer);
     }
 
     /**
-     * @throws EndOfFileReachedException
-     * @throws UnsopportedEndianTypeException
+     * @param string $dataClass
+     *
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
      */
-    public function readShort(): BinaryUtilities
+    public function read(string $dataClass): BinaryUtilities
     {
-        $this->assertNotEndOfFile(2);
+        $dataType = $this->getDataType($dataClass);
 
-        $data = $this->convertToCorrectEndian([
-            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-        ]);
+        $dataType->setContent($this->content);
+        $dataType->setOffset($this->offset);
+        $dataType->setEndianMode($this->getEndianType($this->endian));
 
-        $this->buffer[] = $this->convertToBase((int) base_convert(implode('', $data), 16, 10));
+        $this->buffer = array_merge($this->buffer, $dataType->read());
+
+        $this->offset = $dataType->newOffset();
 
         return $this;
     }
 
     /**
+     * @param string $dataClass
+     * @param int    $length
+     *
+     * @throws DataTypeDoesNotExistsException
      * @throws EndOfFileReachedException
-     * @throws UnsopportedEndianTypeException
+     * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
      */
-    public function readInt(): BinaryUtilities
+    public function readArray(string $dataClass, int $length): BinaryUtilities
     {
-        $this->assertNotEndOfFile(4);
+        $dataType = $this->getDataType($dataClass);
 
-        $data = $this->convertToCorrectEndian([
-            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-        ]);
+        $dataType->setContent($this->content);
+        $dataType->setOffset($this->offset);
+        $dataType->setEndianMode($this->getEndianType($this->endian));
 
-        $this->buffer[] = $this->convertToBase((int) base_convert(implode('', $data), 16, 10));
+        $this->buffer = array_merge($this->buffer, $dataType->readArray($length));
+
+        $this->offset = $dataType->newOffset();
 
         return $this;
     }
 
     /**
-     * @throws EndOfFileReachedException
+     * @param string $dataClass
+     * @param int    $data
+     *
+     * @throws DataTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
      */
-    public function readByte(): BinaryUtilities
+    public function write(string $dataClass, int $data): BinaryUtilities
     {
-        $this->assertNotEndOfFile();
+        $dataType = $this->getDataType($dataClass);
 
-        $value = $this->getSingleByte($this->currentByte++);
+        $dataType->setContent($this->content);
+        $dataType->setOffset($this->offset);
 
-        $this->buffer[] = $this->convertToBase($value);
+        $dataType->write($data);
+
+        $this->content = $dataType->newContent();
+        $this->offset = $dataType->newOffset();
 
         return $this;
     }
 
-    /**
-     * @param int $data
-     *
-     * @throws EndOfFileReachedException
-     *
-     * @return BinaryUtilities
-     */
-    public function writeByte(int $data): BinaryUtilities
-    {
-        $this->assertNotEndOfFile();
-
-        $this->setSingleByte($this->currentByte++, $data);
-
-        return $this;
-    }
-
-    /**
-     * @param int $length
-     *
-     * @throws EndOfFileReachedException
-     *
-     * @return BinaryUtilities
-     */
-    public function readByteArray(int $length): BinaryUtilities
-    {
-        $startBytePosition = $this->currentByte;
-
-        for ($i = $startBytePosition; $i <= $startBytePosition - 1 + $length; ++$i) {
-            $this->readByte();
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @throws EndOfFileReachedException
-     *
-     * @return BinaryUtilities
-     */
-    public function writeByteArray(array $data): BinaryUtilities
-    {
-        $dataLength = count($data);
-        $startBytePosition = $this->currentByte;
-
-        for ($i = $startBytePosition; $i <= $startBytePosition - 1 + $dataLength; ++$i) {
-            $this->writeByte($data[$i - $startBytePosition]);
-        }
-
-        return $this;
-    }
+//    /**
+//     * @throws EndOfFileReachedException
+//     * @throws UnsopportedEndianTypeException
+//     *
+//     * @return BinaryUtilities
+//     */
+//    public function readShort(): BinaryUtilities
+//    {
+//        $this->assertNotEndOfFile(2);
+//        $data = $this->convertToCorrectEndian([
+//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
+//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
+//        ]);
+//        $this->buffer[] = $this->convertToBase((int) base_convert(implode('', $data), 16, 10));
+//
+//        return $this;
+//    }
+//
+//    /**
+//     * @throws EndOfFileReachedException
+//     * @throws UnsopportedEndianTypeException
+//     *
+//     * @return BinaryUtilities
+//     */
+//    public function readInt(): BinaryUtilities
+//    {
+//        $this->assertNotEndOfFile(4);
+//        $data = $this->convertToCorrectEndian([
+//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
+//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
+//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
+//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
+//        ]);
+//        $this->buffer[] = $this->convertToBase((int) base_convert(implode('', $data), 16, 10));
+//
+//        return $this;
+//    }
 
     public function save(): void
     {
@@ -260,22 +260,52 @@ class BinaryUtilities
     }
 
     /**
-     * @param int $position
+     * @param string $dataClass
      *
-     * @return int
+     * @throws DataTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
+     *
+     * @return AbstractDataType
      */
-    private function getSingleByte(int $position): int
+    private function getDataType(string $dataClass): AbstractDataType
     {
-        return (int) hexdec(bin2hex($this->content[$position]));
+        if (!class_exists($dataClass)) {
+            throw new DataTypeDoesNotExistsException();
+        }
+
+        if (!array_key_exists($dataClass, $this->dataTypeClasses)) {
+            /** @var AbstractDataType $type */
+            $type = new $dataClass();
+
+            if (!$type instanceof AbstractDataType) {
+                throw new InvalidDataTypeException();
+            }
+        } else {
+            /** @var AbstractDataType $dataType */
+            $type = $this->dataTypeClasses[$dataClass];
+        }
+
+        return $type;
     }
 
     /**
-     * @param int $position
-     * @param int $data
+     * @param null|string $entianType
+     *
+     * @throws EndianTypeDoesNotExistsException
+     *
+     * @return AbstractEndianType
      */
-    private function setSingleByte(int $position, int $data): void
+    private function getEndianType(?string $entianType): AbstractEndianType
     {
-        $this->content[$position] = hex2bin(str_pad(dechex($data), 2, '0', STR_PAD_LEFT));
+        if ($entianType === null) {
+            $entianType = BigEndian::class;
+        }
+
+        if (!class_exists($entianType)) {
+            throw new EndianTypeDoesNotExistsException();
+        }
+
+        return new $entianType();
     }
 
     /**
@@ -293,28 +323,15 @@ class BinaryUtilities
         $this->currentBit = 0;
         $this->currentByte = 0;
         $this->endOfFile = filesize($this->file);
-
         $handle = fopen($this->file, 'rb');
         $this->content = fread($handle, $this->endOfFile);
         fclose($handle);
     }
 
     /**
-     * @param int $length
-     *
-     * @throws EndOfFileReachedException
-     */
-    private function assertNotEndOfFile($length = 1): void
-    {
-        if ($this->currentByte + $length - 1 > $this->endOfFile - 1) {
-            throw new EndOfFileReachedException();
-        }
-    }
-
-    /**
      * @param array $data
      *
-     * @throws UnsopportedEndianTypeException
+     * @throws UnsupportedEndianTypeException
      *
      * @return array
      */
@@ -326,7 +343,15 @@ class BinaryUtilities
             case self::ENDIAN_BIG:
                 return $data;
             default:
-                throw new UnsopportedEndianTypeException((string) $this->endian);
+                throw new UnsupportedEndianTypeException((string) $this->endian);
         }
+    }
+
+    /**
+     * @return int
+     */
+    private function endOfFile(): int
+    {
+        return $this->endOfFile;
     }
 }

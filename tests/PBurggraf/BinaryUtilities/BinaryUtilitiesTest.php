@@ -3,6 +3,10 @@
 namespace PBurggraf\BinaryUtilities\Test;
 
 use PBurggraf\BinaryUtilities\BinaryUtilities;
+use PBurggraf\BinaryUtilities\DataType\Byte;
+use PBurggraf\BinaryUtilities\DataType\Integer;
+use PBurggraf\BinaryUtilities\DataType\Short;
+use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
 use PHPUnit\Framework\TestCase;
@@ -40,19 +44,15 @@ class BinaryUtilitiesTest extends TestCase
 
     public function testReadFirstSingleByte()
     {
-        //        $binaryFile = __DIR__ . '/../../Resources/data.bin';
-//        $binaryFileCopy = '/tmp/' . md5(microtime());
-//
-//        copy($binaryFile, $binaryFileCopy);
-//
-//        $binaryUtility = new BinaryUtilities();
-//        $binaryUtility->setFile($binaryFileCopy);
-//
-//        $firstByte = $binaryUtility->readByte();
-//
-//        static::assertEquals(0, $firstByte);
-//
-//        unlink($binaryFileCopy);
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($this->binaryFile);
+
+        $byteArray = $binaryUtility
+            ->read(Byte::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals([0], $byteArray);
     }
 
     public function testReadFirstThreeBytes()
@@ -60,36 +60,27 @@ class BinaryUtilitiesTest extends TestCase
         $binaryUtility = new BinaryUtilities();
         $binaryUtility->setFile($this->binaryFile);
 
-        $byteArray = $binaryUtility->readByte()->readByte()->readByte()->returnBuffer();
+        $byteArray = $binaryUtility
+            ->read(Byte::class)
+            ->read(Byte::class)
+            ->read(Byte::class)
+            ->returnBuffer();
 
         static::assertCount(3, $byteArray);
         static::assertEquals([0, 17, 34], $byteArray);
     }
 
-    public function testReadFirstThreeBytesWithByteArray()
+    public function testReadFirstThreeBytesWithArray()
     {
         $binaryUtility = new BinaryUtilities();
         $binaryUtility->setFile($this->binaryFile);
 
-        $byteArray = $binaryUtility->readByteArray(3)->returnBuffer();
+        $byteArray = $binaryUtility
+            ->readArray(Byte::class, 3)
+            ->returnBuffer();
 
         static::assertCount(3, $byteArray);
         static::assertEquals([0, 17, 34], $byteArray);
-    }
-
-    public function testReadWholeFile()
-    {
-        $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
-
-        $byteArray = $binaryUtility->readByteArray($binaryUtility->endOfFile())->returnBuffer();
-
-        static::assertCount(40, $byteArray);
-        static::assertEquals([
-            0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255,
-            255, 238, 221, 204, 187, 170, 153, 136, 119, 102, 85, 68, 51, 34, 17, 0,
-            1, 2, 4, 8, 16, 32, 64, 128,
-        ], $byteArray);
     }
 
     public function testReadOverEndOfFile()
@@ -99,66 +90,239 @@ class BinaryUtilitiesTest extends TestCase
         $binaryUtility = new BinaryUtilities();
         $binaryUtility->setFile($this->binaryFile);
 
-        $binaryUtility->offset(40)->readByte()->readByte();
+        $binaryUtility->offset(40)->read(Byte::class)->read(Byte::class);
     }
 
-    public function testReadOverEndOfFileWithByteArray()
+    public function testReadOverEndOfFileWithArray()
     {
         $this->expectException(EndOfFileReachedException::class);
 
         $binaryUtility = new BinaryUtilities();
         $binaryUtility->setFile($this->binaryFile);
 
-        $binaryUtility->offset(40)->readByteArray(2);
+        $binaryUtility->offset(40)->readArray(Byte::class, 2);
     }
 
-    public function testReadShortBigEndian()
+    public function testWriteFirstSingleByte()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->write(Byte::class, 0xa0)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->read(Byte::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals([0xa0], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
+
+    public function testWriteFirstThreeBytes()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = '/tmp/' . md5(microtime());
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->write(Byte::class, 0xa0)
+            ->write(Byte::class, 0xa1)
+            ->write(Byte::class, 0xa2)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->read(Byte::class)
+            ->read(Byte::class)
+            ->read(Byte::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0, 0xa1, 0xa2], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
+
+
+
+    public function testReadFirstSingleShortBigEndian()
     {
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
 
-        $short = $binaryUtility->readShort()->returnBuffer();
+        $short = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->read(Short::class)
+            ->returnBuffer();
 
         static::assertCount(1, $short);
         static::assertEquals([17], $short);
     }
 
+    public function testReadFirstThreeShortBigEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $short = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $short);
+        static::assertEquals([17, 8755, 17493], $short);
+    }
+
+    public function testReadFirstThreeShortWithArrayBigEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $short = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->readArray(Short::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $short);
+        static::assertEquals([17, 8755, 17493], $short);
+    }
+
+
     public function testReadShortLittleEndian()
     {
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility
+        $short = $binaryUtility
             ->setFile($this->binaryFile)
-            ->endian(BinaryUtilities::ENDIAN_LITTLE)
-        ;
-
-        $short = $binaryUtility->readShort()->returnBuffer();
+            ->setEndian(LittleEndian::class)
+            ->read(Short::class)
+            ->returnBuffer();
 
         static::assertCount(1, $short);
         static::assertEquals([4352], $short);
     }
 
-    public function testReadIntBigEndian()
+    public function testReadFirstThreeShortLittleEndian()
     {
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
+        $short = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->setEndian(LittleEndian::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->read(Short::class)
+            ->returnBuffer();
 
-        $short = $binaryUtility->readInt()->returnBuffer();
-
-        static::assertCount(1, $short);
-        static::assertEquals([1122867], $short);
+        static::assertCount(3, $short);
+        static::assertEquals([4352, 13090, 21828], $short);
     }
 
-    public function testReadIntLittleEndian()
+    public function testReadFirstThreeShortWithArrayLittleEndian()
     {
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility
+        $short = $binaryUtility
             ->setFile($this->binaryFile)
-            ->endian(BinaryUtilities::ENDIAN_LITTLE)
-        ;
+            ->setEndian(LittleEndian::class)
+            ->readArray(Short::class, 3)
+            ->returnBuffer();
 
-        $short = $binaryUtility->readInt()->returnBuffer();
+        static::assertCount(3, $short);
+        static::assertEquals([4352, 13090, 21828], $short);
+    }
 
-        static::assertCount(1, $short);
-        static::assertEquals([857870592], $short);
+
+
+    public function testReadFirstSingleIntegerBigEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $int = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $int);
+        static::assertEquals([1122867], $int);
+    }
+
+    public function testReadFirstThreeIntegerBigEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $int = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $int);
+        static::assertEquals([1122867, 1146447479, 2291772091], $int);
+    }
+
+    public function testReadFirstThreeIntegerWithArrayBigEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $int = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->readArray(Integer::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $int);
+        static::assertEquals([1122867, 1146447479, 2291772091], $int);
+    }
+
+
+    public function testReadFirstSingleIntegerLittleEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $int = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->setEndian(LittleEndian::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $int);
+        static::assertEquals([857870592], $int);
+    }
+
+    public function testReadFirstThreeIntegerLittleEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $int = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->setEndian(LittleEndian::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->read(Integer::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $int);
+        static::assertEquals([857870592, 2003195204, 3148519816], $int);
+    }
+
+    public function testReadFirstThreeIntegerWithArrayLittleEndian()
+    {
+        $binaryUtility = new BinaryUtilities();
+        $int = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->setEndian(LittleEndian::class)
+            ->readArray(Integer::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $int);
+        static::assertEquals([857870592, 2003195204, 3148519816], $int);
     }
 }

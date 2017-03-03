@@ -5,6 +5,6 @@ namespace PBurggraf\BinaryUtilities\Exception;
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
  */
-class UnsopportedEndianTypeException extends \Exception
+class InvalidDataTypeException extends \Exception
 {
 }
