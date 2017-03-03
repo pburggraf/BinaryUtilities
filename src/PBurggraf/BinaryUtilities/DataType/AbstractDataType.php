@@ -11,7 +11,7 @@ use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
 abstract class AbstractDataType
 {
     /**
-     * @var array
+     * @var string
      */
     protected $content;
 

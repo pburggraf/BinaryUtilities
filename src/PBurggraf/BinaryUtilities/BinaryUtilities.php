@@ -12,7 +12,6 @@ use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
-use PBurggraf\BinaryUtilities\Exception\UnsupportedEndianTypeException;
 
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
@@ -170,7 +169,7 @@ class BinaryUtilities
      * @param int    $length
      *
      * @throws DataTypeDoesNotExistsException
-     * @throws EndOfFileReachedException
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
@@ -213,44 +212,6 @@ class BinaryUtilities
 
         return $this;
     }
-
-//    /**
-//     * @throws EndOfFileReachedException
-//     * @throws UnsopportedEndianTypeException
-//     *
-//     * @return BinaryUtilities
-//     */
-//    public function readShort(): BinaryUtilities
-//    {
-//        $this->assertNotEndOfFile(2);
-//        $data = $this->convertToCorrectEndian([
-//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-//        ]);
-//        $this->buffer[] = $this->convertToBase((int) base_convert(implode('', $data), 16, 10));
-//
-//        return $this;
-//    }
-//
-//    /**
-//     * @throws EndOfFileReachedException
-//     * @throws UnsopportedEndianTypeException
-//     *
-//     * @return BinaryUtilities
-//     */
-//    public function readInt(): BinaryUtilities
-//    {
-//        $this->assertNotEndOfFile(4);
-//        $data = $this->convertToCorrectEndian([
-//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-//            str_pad(base_convert($this->getSingleByte($this->currentByte++), 10, 16), 2, '0'),
-//        ]);
-//        $this->buffer[] = $this->convertToBase((int) base_convert(implode('', $data), 16, 10));
-//
-//        return $this;
-//    }
 
     public function save(): void
     {
@@ -321,37 +282,10 @@ class BinaryUtilities
     private function setContent(): void
     {
         $this->currentBit = 0;
-        $this->currentByte = 0;
+        $this->offset = 0;
         $this->endOfFile = filesize($this->file);
         $handle = fopen($this->file, 'rb');
         $this->content = fread($handle, $this->endOfFile);
         fclose($handle);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @throws UnsupportedEndianTypeException
-     *
-     * @return array
-     */
-    private function convertToCorrectEndian(array $data): array
-    {
-        switch ($this->endian) {
-            case self::ENDIAN_LITTLE:
-                return array_reverse($data);
-            case self::ENDIAN_BIG:
-                return $data;
-            default:
-                throw new UnsupportedEndianTypeException((string) $this->endian);
-        }
-    }
-
-    /**
-     * @return int
-     */
-    private function endOfFile(): int
-    {
-        return $this->endOfFile;
     }
 }
