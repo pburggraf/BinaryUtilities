@@ -109,8 +109,10 @@ class Integer extends AbstractDataType
         $dataLength = count($data);
         $startBytePosition = $this->offset;
 
-        for ($i = $this->offset; $i <= $this->offset - 1 + $dataLength; ++$i) {
+        for ($i = $startBytePosition; $i <= $startBytePosition - 1 + $dataLength; ++$i) {
             $bytes = $this->splitBytes($data[$i - $startBytePosition]);
+
+            $bytes = $this->endianMode->applyEndianess($bytes);
 
             $this->assertNotEndOfFile();
             $this->setByte($this->offset++, $bytes[0]);

@@ -234,4 +234,71 @@ class ShortTest extends BinaryUtilitiesTest
 
         unlink($binaryFileCopy);
     }
+
+    public function testWriteFirstThreeShortWithArrayBigEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = vfsStream::newFile('data-copy.bin')->at($this->virtualFileSystem)->url();
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->writeArray(Short::class, [0xa0b0, 0xa1b1, 0xa2b2])
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->readArray(Short::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0b0, 0xa1b1, 0xa2b2], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
+
+    public function testWriteFirstThreeShortWithArrayLittleEndian()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = vfsStream::newFile('data-copy.bin')->at($this->virtualFileSystem)->url();
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->writeArray(Short::class, [0xa0b0, 0xa1b1, 0xa2b2])
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(LittleEndian::class)
+            ->readArray(Short::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0b0, 0xa1b1, 0xa2b2], $byteArray);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->setEndian(BigEndian::class)
+            ->readArray(Short::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xb0a0, 0xb1a1, 0xb2a2], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
 }

@@ -194,6 +194,7 @@ class BinaryUtilities
      * @param int    $data
      *
      * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
@@ -207,6 +208,32 @@ class BinaryUtilities
         $dataType->setEndianMode($this->getEndianType($this->endian));
 
         $dataType->write($data);
+
+        $this->content = $dataType->newContent();
+        $this->offset = $dataType->newOffset();
+
+        return $this;
+    }
+
+    /**
+     * @param string $dataClass
+     * @param array  $data
+     *
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
+     *
+     * @return BinaryUtilities
+     */
+    public function writeArray(string $dataClass, array $data): BinaryUtilities
+    {
+        $dataType = $this->getDataType($dataClass);
+
+        $dataType->setContent($this->content);
+        $dataType->setOffset($this->offset);
+        $dataType->setEndianMode($this->getEndianType($this->endian));
+
+        $dataType->writeArray($data);
 
         $this->content = $dataType->newContent();
         $this->offset = $dataType->newOffset();

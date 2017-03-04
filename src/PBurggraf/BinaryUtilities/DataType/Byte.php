@@ -62,7 +62,7 @@ class Byte extends AbstractDataType
         $dataLength = count($data);
         $startBytePosition = $this->offset;
 
-        for ($i = $this->offset; $i <= $this->offset - 1 + $dataLength; ++$i) {
+        for ($i = $startBytePosition; $i <= $startBytePosition - 1 + $dataLength; ++$i) {
             $this->assertNotEndOfFile();
             $this->setByte($this->offset++, $data[$i - $startBytePosition]);
         }

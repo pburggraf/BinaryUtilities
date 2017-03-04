@@ -131,4 +131,31 @@ class ByteTest extends BinaryUtilitiesTest
 
         unlink($binaryFileCopy);
     }
+
+    public function testWriteFirstThreeBytesWithArray()
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = vfsStream::newFile('data-copy.bin')->at($this->virtualFileSystem)->url();
+
+        copy($binaryFile, $binaryFileCopy);
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $binaryUtility
+            ->writeArray(Byte::class, [0xa0, 0xa1, 0xa2])
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility->setFile($binaryFileCopy);
+
+        $byteArray = $binaryUtility
+            ->readArray(Byte::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([0xa0, 0xa1, 0xa2], $byteArray);
+
+        unlink($binaryFileCopy);
+    }
 }
