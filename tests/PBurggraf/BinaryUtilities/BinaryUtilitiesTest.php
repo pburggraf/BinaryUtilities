@@ -46,4 +46,21 @@ class BinaryUtilitiesTest extends TestCase
         $binaryUtility = new BinaryUtilities();
         $binaryUtility->setFile('nonExistingFile.bin');
     }
+
+    /**
+     * @return string
+     */
+    protected function bootstrapWriteableFile(): string
+    {
+        $binaryFile = $this->binaryFile;
+        $binaryFileCopy = vfsStream::newFile('data-copy.bin')->at($this->virtualFileSystem)->url();
+
+        if (file_exists($binaryFileCopy)) {
+            unlink($binaryFileCopy);
+        }
+
+        copy($binaryFile, $binaryFileCopy);
+
+        return $binaryFileCopy;
+    }
 }

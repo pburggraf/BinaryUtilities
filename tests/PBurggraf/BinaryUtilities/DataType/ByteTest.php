@@ -16,9 +16,8 @@ class ByteTest extends BinaryUtilitiesTest
     public function testReadFirstSingleByte()
     {
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
-
         $byteArray = $binaryUtility
+            ->setFile($this->binaryFile)
             ->read(Byte::class)
             ->returnBuffer();
 
@@ -29,9 +28,8 @@ class ByteTest extends BinaryUtilitiesTest
     public function testReadFirstThreeBytes()
     {
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
-
         $byteArray = $binaryUtility
+            ->setFile($this->binaryFile)
             ->read(Byte::class)
             ->read(Byte::class)
             ->read(Byte::class)
@@ -44,9 +42,8 @@ class ByteTest extends BinaryUtilitiesTest
     public function testReadFirstThreeBytesWithArray()
     {
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
-
         $byteArray = $binaryUtility
+            ->setFile($this->binaryFile)
             ->readArray(Byte::class, 3)
             ->returnBuffer();
 
@@ -54,14 +51,80 @@ class ByteTest extends BinaryUtilitiesTest
         static::assertEquals([0, 17, 34], $byteArray);
     }
 
+    public function testWriteFirstSingleByte()
+    {
+        $binaryFileCopy = $this->bootstrapWriteableFile();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->write(Byte::class, 160)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $byteArray = $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->read(Byte::class)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals([160], $byteArray);
+    }
+
+    public function testWriteFirstThreeBytes()
+    {
+        $binaryFileCopy = $this->bootstrapWriteableFile();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->write(Byte::class, 160)
+            ->write(Byte::class, 161)
+            ->write(Byte::class, 162)
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $byteArray = $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->read(Byte::class)
+            ->read(Byte::class)
+            ->read(Byte::class)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([160, 161, 162], $byteArray);
+    }
+
+    public function testWriteFirstThreeBytesWithArray()
+    {
+        $binaryFileCopy = $this->bootstrapWriteableFile();
+
+        $binaryUtility = new BinaryUtilities();
+        $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->writeArray(Byte::class, [160, 161, 162])
+            ->save();
+
+        $binaryUtility = new BinaryUtilities();
+        $byteArray = $binaryUtility
+            ->setFile($binaryFileCopy)
+            ->readArray(Byte::class, 3)
+            ->returnBuffer();
+
+        static::assertCount(3, $byteArray);
+        static::assertEquals([160, 161, 162], $byteArray);
+    }
+
     public function testReadOverEndOfFile()
     {
         $this->expectException(EndOfFileReachedException::class);
 
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
-
-        $binaryUtility->offset(40)->read(Byte::class)->read(Byte::class);
+        $binaryUtility
+            ->setFile($this->binaryFile)
+            ->offset(40)
+            ->read(Byte::class)
+            ->read(Byte::class);
     }
 
     public function testReadOverEndOfFileWithArray()
@@ -69,93 +132,38 @@ class ByteTest extends BinaryUtilitiesTest
         $this->expectException(EndOfFileReachedException::class);
 
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($this->binaryFile);
-
-        $binaryUtility->offset(40)->readArray(Byte::class, 2);
+        $binaryUtility
+            ->setFile($this->binaryFile)
+            ->offset(40)
+            ->readArray(Byte::class, 2);
     }
 
-    public function testWriteFirstSingleByte()
+    public function testWriteOverEndOfFile()
     {
-        $binaryFile = $this->binaryFile;
-        $binaryFileCopy = vfsStream::newFile('data-copy.bin')->at($this->virtualFileSystem)->url();
+        $this->expectException(EndOfFileReachedException::class);
 
-        copy($binaryFile, $binaryFileCopy);
+        $binaryFileCopy = $this->bootstrapWriteableFile();
 
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($binaryFileCopy);
-
         $binaryUtility
-            ->write(Byte::class, 0xa0)
+            ->setFile($binaryFileCopy)
+            ->offset(40)
+            ->write(Byte::class, 160)
+            ->write(Byte::class, 161)
             ->save();
-
-        $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($binaryFileCopy);
-
-        $byteArray = $binaryUtility
-            ->read(Byte::class)
-            ->returnBuffer();
-
-        static::assertCount(1, $byteArray);
-        static::assertEquals([0xa0], $byteArray);
-
-        unlink($binaryFileCopy);
     }
 
-    public function testWriteFirstThreeBytes()
+    public function testWriteOverEndOfFileWithArray()
     {
-        $binaryFile = $this->binaryFile;
-        $binaryFileCopy = vfsStream::newFile('data-copy.bin')->at($this->virtualFileSystem)->url();
+        $this->expectException(EndOfFileReachedException::class);
 
-        copy($binaryFile, $binaryFileCopy);
+        $binaryFileCopy = $this->bootstrapWriteableFile();
 
         $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($binaryFileCopy);
-
         $binaryUtility
-            ->write(Byte::class, 0xa0)
-            ->write(Byte::class, 0xa1)
-            ->write(Byte::class, 0xa2)
+            ->setFile($binaryFileCopy)
+            ->offset(40)
+            ->writeArray(Byte::class, [160, 161])
             ->save();
-
-        $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($binaryFileCopy);
-
-        $byteArray = $binaryUtility
-            ->read(Byte::class)
-            ->read(Byte::class)
-            ->read(Byte::class)
-            ->returnBuffer();
-
-        static::assertCount(3, $byteArray);
-        static::assertEquals([0xa0, 0xa1, 0xa2], $byteArray);
-
-        unlink($binaryFileCopy);
-    }
-
-    public function testWriteFirstThreeBytesWithArray()
-    {
-        $binaryFile = $this->binaryFile;
-        $binaryFileCopy = vfsStream::newFile('data-copy.bin')->at($this->virtualFileSystem)->url();
-
-        copy($binaryFile, $binaryFileCopy);
-
-        $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($binaryFileCopy);
-
-        $binaryUtility
-            ->writeArray(Byte::class, [0xa0, 0xa1, 0xa2])
-            ->save();
-
-        $binaryUtility = new BinaryUtilities();
-        $binaryUtility->setFile($binaryFileCopy);
-
-        $byteArray = $binaryUtility
-            ->readArray(Byte::class, 3)
-            ->returnBuffer();
-
-        static::assertCount(3, $byteArray);
-        static::assertEquals([0xa0, 0xa1, 0xa2], $byteArray);
-
-        unlink($binaryFileCopy);
     }
 }
