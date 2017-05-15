@@ -133,11 +133,19 @@ class BinaryUtilities
     }
 
     /**
+     * @param bool $clearBuffer
+     *
      * @return array
      */
-    public function returnBuffer(): array
+    public function returnBuffer(bool $clearBuffer = true): array
     {
-        return array_map([$this, 'convertToBase'], $this->buffer);
+        $buffer = $this->buffer;
+
+        if ($clearBuffer) {
+            $this->buffer = [];
+        }
+
+        return array_map([$this, 'convertToBase'], $buffer);
     }
 
     /**
