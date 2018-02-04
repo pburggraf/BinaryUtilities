@@ -2,10 +2,13 @@
 
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
-use org\bovigo\vfs\vfsStream;
 use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\DataType\Byte;
+use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
+use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
 use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
 
 /**
@@ -13,6 +16,12 @@ use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
  */
 class ByteTest extends BinaryUtilitiesTest
 {
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstSingleByte()
     {
         $binaryUtility = new BinaryUtilities();
@@ -25,6 +34,12 @@ class ByteTest extends BinaryUtilitiesTest
         static::assertEquals([0], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstThreeBytes()
     {
         $binaryUtility = new BinaryUtilities();
@@ -39,6 +54,12 @@ class ByteTest extends BinaryUtilitiesTest
         static::assertEquals([0, 17, 34], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstThreeBytesWithArray()
     {
         $binaryUtility = new BinaryUtilities();
@@ -51,6 +72,12 @@ class ByteTest extends BinaryUtilitiesTest
         static::assertEquals([0, 17, 34], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstSingleByte()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -71,6 +98,12 @@ class ByteTest extends BinaryUtilitiesTest
         static::assertEquals([160], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstThreeBytes()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -95,6 +128,12 @@ class ByteTest extends BinaryUtilitiesTest
         static::assertEquals([160, 161, 162], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstThreeBytesWithArray()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -115,6 +154,13 @@ class ByteTest extends BinaryUtilitiesTest
         static::assertEquals([160, 161, 162], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndOfFileReachedException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadOverEndOfFile()
     {
         $this->expectException(EndOfFileReachedException::class);
@@ -127,6 +173,13 @@ class ByteTest extends BinaryUtilitiesTest
             ->read(Byte::class);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndOfFileReachedException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadOverEndOfFileWithArray()
     {
         $this->expectException(EndOfFileReachedException::class);
@@ -138,6 +191,13 @@ class ByteTest extends BinaryUtilitiesTest
             ->readArray(Byte::class, 2);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndOfFileReachedException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteOverEndOfFile()
     {
         $this->expectException(EndOfFileReachedException::class);
@@ -153,6 +213,13 @@ class ByteTest extends BinaryUtilitiesTest
             ->save();
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndOfFileReachedException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteOverEndOfFileWithArray()
     {
         $this->expectException(EndOfFileReachedException::class);

@@ -2,11 +2,14 @@
 
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
-use org\bovigo\vfs\vfsStream;
 use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\DataType\Short;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
 use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
+use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
 use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
 
 /**
@@ -14,6 +17,12 @@ use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
  */
 class ShortTest extends BinaryUtilitiesTest
 {
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstSingleShortBigEndian()
     {
         $binaryUtility = new BinaryUtilities();
@@ -27,6 +36,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([17], $short);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstThreeShortBigEndian()
     {
         $binaryUtility = new BinaryUtilities();
@@ -41,6 +56,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([17, 8755, 17493], $short);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstThreeShortWithArrayBigEndian()
     {
         $binaryUtility = new BinaryUtilities();
@@ -53,6 +74,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([17, 8755, 17493], $short);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstSingleShortBigEndian()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -73,6 +100,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([0xa0b0], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstThreeShortBigEndian()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -97,6 +130,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([0xa0b0, 0xa1b1, 0xa2b2], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadShortLittleEndian()
     {
         $binaryUtility = new BinaryUtilities();
@@ -110,6 +149,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([4352], $short);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstThreeShortLittleEndian()
     {
         $binaryUtility = new BinaryUtilities();
@@ -125,6 +170,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([4352, 13090, 21828], $short);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testReadFirstThreeShortWithArrayLittleEndian()
     {
         $binaryUtility = new BinaryUtilities();
@@ -138,6 +189,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([4352, 13090, 21828], $short);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstSingleShortLittleEndian()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -170,6 +227,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([0xb0a0], $shortArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstThreeShortLittleEndian()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -211,6 +274,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([0xb0a0, 0xb1a1, 0xb2a2], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstThreeShortWithArrayBigEndian()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
@@ -231,6 +300,12 @@ class ShortTest extends BinaryUtilitiesTest
         static::assertEquals([0xa0b0, 0xa1b1, 0xa2b2], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testWriteFirstThreeShortWithArrayLittleEndian()
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();

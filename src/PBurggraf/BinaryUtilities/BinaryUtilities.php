@@ -18,13 +18,13 @@ use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
  */
 class BinaryUtilities
 {
-    const MODE_READ = 'read';
-    const MODE_WRITE = 'write';
+    public const MODE_READ = 'read';
+    public const MODE_WRITE = 'write';
 
-    const BASE_BINARY = 2;
-    const BASE_OCTAL = 7;
-    const BASE_DECIMAL = 10;
-    const BASE_HEXADECIMAL = 16;
+    public const BASE_BINARY = 2;
+    public const BASE_OCTAL = 7;
+    public const BASE_DECIMAL = 10;
+    public const BASE_HEXADECIMAL = 16;
 
     /**
      * @var string

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PBurggraf\BinaryUtilities\DataType;
 
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;

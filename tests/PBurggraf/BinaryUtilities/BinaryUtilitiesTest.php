@@ -5,9 +5,6 @@ namespace PBurggraf\BinaryUtilities\Test;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PBurggraf\BinaryUtilities\BinaryUtilities;
-use PBurggraf\BinaryUtilities\DataType\Integer;
-use PBurggraf\BinaryUtilities\EndianType\BigEndian;
-use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
 use PHPUnit\Framework\TestCase;
 
@@ -39,6 +36,9 @@ class BinaryUtilitiesTest extends TestCase
         $this->binaryFile = $virtualFile->url();
     }
 
+    /**
+     * @throws FileDoesNotExistsException
+     */
     public function testReadNonExistingFile()
     {
         $this->expectException(FileDoesNotExistsException::class);
