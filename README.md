@@ -1,4 +1,4 @@
-BinaryUtilities [![Build Status](https://travis-ci.org/pburggraf/BinaryUtilities.svg?branch=master)](https://travis-ci.org/pburggraf/BinaryUtilities) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pburggraf/BinaryUtilities/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pburggraf/BinaryUtilities/?branch=master) [![Dependency Status](https://www.versioneye.com/user/projects/58b922e72ff683004468cc57/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58b922e72ff683004468cc57)
+BinaryUtilities [![Build Status](https://travis-ci.org/pburggraf/BinaryUtilities.svg?branch=master)](https://travis-ci.org/pburggraf/BinaryUtilities) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pburggraf/BinaryUtilities/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pburggraf/BinaryUtilities/?branch=master)
 ===
 
 Class for working with binary data in PHP >=7.1
@@ -9,12 +9,12 @@ Class for working with binary data in PHP >=7.1
 
 require __DIR__ . '/vendor/autoload.php';
 
-use PBurggraf\BinaryUtilities\BinaryUtilities;
+use \PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use \PBurggraf\BinaryUtilities\DataType\Byte;
 
 file_put_contents('/tmp/temp.txt', '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
-$binaryUtility = new BinaryUtilities();
+$binaryUtility = BinaryUtilityFactory::create();
 
 // Read data
 $result = $binaryUtility
@@ -43,7 +43,7 @@ $binaryUtility
     ->save();
 
 var_dump(file_get_contents('/tmp/temp.txt'));
-// Expected result_
+// Expected result:
 // string(36) "01234567BA98CDEFGHIJKLMNOPQRSTUVWXYZ"
 
 ```

@@ -3,6 +3,7 @@
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
 use PBurggraf\BinaryUtilities\BinaryUtilities;
+use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Byte;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
@@ -24,7 +25,7 @@ class ByteTest extends BinaryUtilitiesTest
      */
     public function testReadFirstSingleByte()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($this->binaryFile)
             ->read(Byte::class)
@@ -42,7 +43,7 @@ class ByteTest extends BinaryUtilitiesTest
      */
     public function testReadFirstThreeBytes()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($this->binaryFile)
             ->read(Byte::class)
@@ -62,7 +63,7 @@ class ByteTest extends BinaryUtilitiesTest
      */
     public function testReadFirstThreeBytesWithArray()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($this->binaryFile)
             ->readArray(Byte::class, 3)
@@ -82,13 +83,13 @@ class ByteTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->write(Byte::class, 160)
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->read(Byte::class)
@@ -108,7 +109,7 @@ class ByteTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->write(Byte::class, 160)
@@ -116,7 +117,7 @@ class ByteTest extends BinaryUtilitiesTest
             ->write(Byte::class, 162)
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->read(Byte::class)
@@ -138,13 +139,13 @@ class ByteTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->writeArray(Byte::class, [160, 161, 162])
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->readArray(Byte::class, 3)
@@ -165,7 +166,7 @@ class ByteTest extends BinaryUtilitiesTest
     {
         $this->expectException(EndOfFileReachedException::class);
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($this->binaryFile)
             ->offset(40)
@@ -184,7 +185,7 @@ class ByteTest extends BinaryUtilitiesTest
     {
         $this->expectException(EndOfFileReachedException::class);
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($this->binaryFile)
             ->offset(40)
@@ -204,7 +205,7 @@ class ByteTest extends BinaryUtilitiesTest
 
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->offset(40)
@@ -226,7 +227,7 @@ class ByteTest extends BinaryUtilitiesTest
 
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->offset(40)

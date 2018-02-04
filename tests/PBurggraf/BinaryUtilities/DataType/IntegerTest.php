@@ -3,6 +3,7 @@
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
 use PBurggraf\BinaryUtilities\BinaryUtilities;
+use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Integer;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
 use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
@@ -25,7 +26,7 @@ class IntegerTest extends BinaryUtilitiesTest
      */
     public function testReadFirstSingleIntegerBigEndian()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->read(Integer::class)
@@ -43,7 +44,7 @@ class IntegerTest extends BinaryUtilitiesTest
      */
     public function testReadFirstThreeIntegerBigEndian()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->read(Integer::class)
@@ -63,7 +64,7 @@ class IntegerTest extends BinaryUtilitiesTest
      */
     public function testReadFirstThreeIntegerWithArrayBigEndian()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->readArray(Integer::class, 3)
@@ -83,14 +84,14 @@ class IntegerTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility->setFile($binaryFileCopy);
 
         $binaryUtility
             ->write(Integer::class, 0xa0b0c0d0)
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility->setFile($binaryFileCopy);
 
         $byteArray = $binaryUtility
@@ -111,7 +112,7 @@ class IntegerTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->write(Integer::class, 0xa0b0c0d0)
@@ -119,7 +120,7 @@ class IntegerTest extends BinaryUtilitiesTest
             ->write(Integer::class, 0xa2b2c2d2)
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->read(Integer::class)
@@ -141,13 +142,13 @@ class IntegerTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->writeArray(Integer::class, [0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2])
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->readArray(Integer::class, 3)
@@ -165,7 +166,7 @@ class IntegerTest extends BinaryUtilitiesTest
      */
     public function testReadFirstSingleIntegerLittleEndian()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->setEndian(LittleEndian::class)
@@ -184,7 +185,7 @@ class IntegerTest extends BinaryUtilitiesTest
      */
     public function testReadFirstThreeIntegerLittleEndian()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->setEndian(LittleEndian::class)
@@ -205,7 +206,7 @@ class IntegerTest extends BinaryUtilitiesTest
      */
     public function testReadFirstThreeIntegerWithArrayLittleEndian()
     {
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->setEndian(LittleEndian::class)
@@ -226,14 +227,14 @@ class IntegerTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
             ->write(Integer::class, 0xa0b0c0d0)
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
@@ -243,7 +244,7 @@ class IntegerTest extends BinaryUtilitiesTest
         static::assertCount(1, $byteArray);
         static::assertEquals([0xa0b0c0d0], $byteArray);
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(BigEndian::class)
@@ -264,7 +265,7 @@ class IntegerTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
@@ -273,7 +274,7 @@ class IntegerTest extends BinaryUtilitiesTest
             ->write(Integer::class, 0xa2b2c2d2)
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
@@ -285,7 +286,7 @@ class IntegerTest extends BinaryUtilitiesTest
         static::assertCount(3, $byteArray);
         static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(BigEndian::class)
@@ -308,14 +309,14 @@ class IntegerTest extends BinaryUtilitiesTest
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
             ->writeArray(Integer::class, [0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2])
             ->save();
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
@@ -325,7 +326,7 @@ class IntegerTest extends BinaryUtilitiesTest
         static::assertCount(3, $byteArray);
         static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(BigEndian::class)

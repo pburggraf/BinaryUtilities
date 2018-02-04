@@ -5,6 +5,7 @@ namespace PBurggraf\BinaryUtilities\Test;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PBurggraf\BinaryUtilities\BinaryUtilities;
+use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
 use PHPUnit\Framework\TestCase;
 
@@ -43,7 +44,7 @@ class BinaryUtilitiesTest extends TestCase
     {
         $this->expectException(FileDoesNotExistsException::class);
 
-        $binaryUtility = new BinaryUtilities();
+        $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility->setFile('nonExistingFile.bin');
     }
 
