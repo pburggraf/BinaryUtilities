@@ -150,6 +150,38 @@ class BinaryUtilities
 
     /**
      * @param string $dataClass
+     * @param bool   $clearBuffer
+     *
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
+     *
+     * @return string
+     */
+    public function readReturn(string $dataClass, bool $clearBuffer = true): string
+    {
+        return $this->read($dataClass)->returnBuffer($clearBuffer)[0];
+    }
+
+    /**
+     * @param int    $offset
+     * @param string $dataClass
+     * @param bool   $clearBuffer
+     *
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
+     * @throws EndOfFileReachedException
+     *
+     * @return string
+     */
+    public function readAndReturnFromOffset(int $offset, string $dataClass, bool $clearBuffer = true): string
+    {
+        return $this->offset($offset)->readReturn($dataClass, $clearBuffer);
+    }
+
+    /**
+     * @param string $dataClass
      *
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException

@@ -6,6 +6,8 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
+use PBurggraf\BinaryUtilities\DataType\Byte;
+use PBurggraf\BinaryUtilities\DataType\Integer;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
 use PHPUnit\Framework\TestCase;
 
@@ -46,6 +48,58 @@ class BinaryUtilitiesTest extends TestCase
 
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility->setFile('nonExistingFile.bin');
+    }
+
+    public function testBinaryBaseMethod()
+    {
+        $binaryUtility = BinaryUtilityFactory::create();
+        $byteArray = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->offset(0x10)
+            ->read(Integer::class)
+            ->setBase(BinaryUtilities::BASE_BINARY)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals(['11111111111011101101110111001100'], $byteArray);
+    }
+
+    public function testOctalBaseMethod()
+    {
+        $binaryUtility = BinaryUtilityFactory::create();
+        $byteArray = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->offset(0x10)
+            ->read(Integer::class)
+            ->setBase(BinaryUtilities::BASE_OCTAL)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals(['211256034606'], $byteArray);
+    }
+
+    public function testHexadecimalBaseMethod()
+    {
+        $binaryUtility = BinaryUtilityFactory::create();
+        $byteArray = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->offset(0x10)
+            ->read(Integer::class)
+            ->setBase(BinaryUtilities::BASE_HEXADECIMAL)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals(['ffeeddcc'], $byteArray);
+    }
+
+    public function testQuickReadMethod()
+    {
+        $binaryUtility = BinaryUtilityFactory::create();
+        $byteArray = $binaryUtility
+            ->setFile($this->binaryFile)
+            ->readAndReturnFromOffset(0x10, Integer::class);
+
+        static::assertEquals('4293844428', $byteArray);
     }
 
     /**
