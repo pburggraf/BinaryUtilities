@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
 use PBurggraf\BinaryUtilities\BinaryUtilities;
@@ -9,6 +11,8 @@ use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\FileErrorException;
+use PBurggraf\BinaryUtilities\Exception\FileNotAccessableException;
 use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
 use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
 
@@ -21,6 +25,8 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstSingleByte()
@@ -40,6 +46,8 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
      * @throws InvalidDataTypeException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      */
     public function testReadFirstThreeBytes()
     {
@@ -59,6 +67,8 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeBytesWithArray()
@@ -77,6 +87,8 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstSingleByte()
@@ -103,6 +115,8 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeBytes()
@@ -133,6 +147,8 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeBytesWithArray()
@@ -157,9 +173,10 @@ class ByteTest extends BinaryUtilitiesTest
 
     /**
      * @throws DataTypeDoesNotExistsException
-     * @throws EndOfFileReachedException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadOverEndOfFile()
@@ -176,9 +193,10 @@ class ByteTest extends BinaryUtilitiesTest
 
     /**
      * @throws DataTypeDoesNotExistsException
-     * @throws EndOfFileReachedException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadOverEndOfFileWithArray()
@@ -194,9 +212,10 @@ class ByteTest extends BinaryUtilitiesTest
 
     /**
      * @throws DataTypeDoesNotExistsException
-     * @throws EndOfFileReachedException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteOverEndOfFile()
@@ -216,9 +235,10 @@ class ByteTest extends BinaryUtilitiesTest
 
     /**
      * @throws DataTypeDoesNotExistsException
-     * @throws EndOfFileReachedException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteOverEndOfFileWithArray()

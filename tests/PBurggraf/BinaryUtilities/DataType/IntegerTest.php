@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
 use PBurggraf\BinaryUtilities\BinaryUtilities;
@@ -10,6 +12,8 @@ use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\FileErrorException;
+use PBurggraf\BinaryUtilities\Exception\FileNotAccessableException;
 use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
 use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
 
@@ -23,6 +27,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
      * @throws InvalidDataTypeException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      */
     public function testReadFirstSingleIntegerBigEndian()
     {
@@ -40,6 +46,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeIntegerBigEndian()
@@ -60,6 +68,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeIntegerWithArrayBigEndian()
@@ -78,6 +88,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstSingleIntegerBigEndian()
@@ -106,6 +118,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeIntegerBigEndian()
@@ -136,6 +150,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeIntegerWithArrayBigInteger()
@@ -162,6 +178,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstSingleIntegerLittleEndian()
@@ -181,6 +199,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeIntegerLittleEndian()
@@ -202,6 +222,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeIntegerWithArrayLittleEndian()
@@ -221,6 +243,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstSingleIntegerLittleEndian()
@@ -259,6 +283,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeIntegerLittleEndian()
@@ -303,6 +329,8 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeIntegerWithArrayLittleInteger()

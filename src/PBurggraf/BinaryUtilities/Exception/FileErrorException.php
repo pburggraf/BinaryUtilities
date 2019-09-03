@@ -7,6 +7,6 @@ namespace PBurggraf\BinaryUtilities\Exception;
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
  */
-class InvalidDataTypeException extends \Exception
+class FileErrorException extends \Exception
 {
 }

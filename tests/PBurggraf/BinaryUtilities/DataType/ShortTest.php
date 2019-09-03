@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
 use PBurggraf\BinaryUtilities\BinaryUtilities;
@@ -10,6 +12,8 @@ use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\FileErrorException;
+use PBurggraf\BinaryUtilities\Exception\FileNotAccessableException;
 use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
 use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
 
@@ -23,6 +27,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
      * @throws InvalidDataTypeException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      */
     public function testReadFirstSingleShortBigEndian()
     {
@@ -41,6 +47,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeShortBigEndian()
@@ -61,6 +69,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeShortWithArrayBigEndian()
@@ -79,6 +89,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstSingleShortBigEndian()
@@ -105,6 +117,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeShortBigEndian()
@@ -135,6 +149,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadShortLittleEndian()
@@ -154,6 +170,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeShortLittleEndian()
@@ -175,6 +193,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testReadFirstThreeShortWithArrayLittleEndian()
@@ -194,6 +214,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstSingleShortLittleEndian()
@@ -232,6 +254,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeShortLittleEndian()
@@ -279,6 +303,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeShortWithArrayBigEndian()
@@ -305,6 +331,8 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
     public function testWriteFirstThreeShortWithArrayLittleEndian()

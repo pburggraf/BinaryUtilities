@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PBurggraf\BinaryUtilities;
 
 /**
@@ -7,7 +9,7 @@ namespace PBurggraf\BinaryUtilities;
  */
 class BinaryUtilityFactory
 {
-    public static function create()
+    public static function create(): BinaryUtilities
     {
         return new BinaryUtilities();
     }

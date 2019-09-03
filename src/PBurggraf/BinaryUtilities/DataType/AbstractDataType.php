@@ -58,7 +58,7 @@ abstract class AbstractDataType
      */
     protected function getByte(int $position): int
     {
-        return (int) hexdec(bin2hex($this->content[$position]));
+        return (int) ord($this->content[$position]);
     }
 
     /**
@@ -67,7 +67,7 @@ abstract class AbstractDataType
      */
     protected function setByte(int $position, int $data): void
     {
-        $this->content[$position] = hex2bin(str_pad(dechex($data), 2, '0', STR_PAD_LEFT));
+        $this->content[$position] = chr($data);
     }
 
     /**
