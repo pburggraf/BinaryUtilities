@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
 use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
-use PBurggraf\BinaryUtilities\DataType\Integer;
+use PBurggraf\BinaryUtilities\DataType\FloatingPoint;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
 use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
@@ -19,7 +19,7 @@ use PBurggraf\BinaryUtilities\Test\BinaryUtilitiesTest;
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
  */
-class IntegerTest extends BinaryUtilitiesTest
+class FloatingPointTest extends BinaryUtilitiesTest
 {
     /**
      * @throws DataTypeDoesNotExistsException
@@ -29,16 +29,16 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      */
-    public function testReadFirstSingleIntegerBigEndian(): void
+    public function testReadFirstSingleFloatingPointBigEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
-        $int = $binaryUtility
+        $float = $binaryUtility
             ->setFile($this->binaryFile)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
-        static::assertCount(1, $int);
-        static::assertEquals([1122867], $int);
+        static::assertCount(1, $float);
+        static::assertEquals([1.5734718027410144E-39], $float);
     }
 
     /**
@@ -49,18 +49,18 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeIntegerBigEndian(): void
+    public function testReadFirstThreeFloatingPointBigEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $int);
-        static::assertEquals([1122867, 1146447479, 2291772091], $int);
+        static::assertEquals([1.5734718027410144E-39, 853.6010131835938, -9.248491086907245E-34], $int);
     }
 
     /**
@@ -71,16 +71,16 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeIntegerWithArrayBigEndian(): void
+    public function testReadFirstThreeFloatingPointWithArrayBigEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
-            ->readArray(Integer::class, 3)
-            ->returnBuffer();
+            ->readArray(FloatingPoint::class, 3)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $int);
-        static::assertEquals([1122867, 1146447479, 2291772091], $int);
+        static::assertEquals([1.5734718027410144E-39, 853.6010131835938, -9.248491086907245E-34], $int);
     }
 
     /**
@@ -91,7 +91,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstSingleIntegerBigEndian(): void
+    public function testWriteFirstSingleFloatingPointBigEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -99,18 +99,18 @@ class IntegerTest extends BinaryUtilitiesTest
         $binaryUtility->setFile($binaryFileCopy);
 
         $binaryUtility
-            ->write(Integer::class, 0xa0b0c0d0)
+            ->write(FloatingPoint::class, 1234.5678)
             ->save();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility->setFile($binaryFileCopy);
 
         $byteArray = $binaryUtility
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(1, $byteArray);
-        static::assertEquals([0xa0b0c0d0], $byteArray);
+        static::assertEquals([1234.5677490234375], $byteArray);
     }
 
     /**
@@ -121,28 +121,28 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeIntegerBigEndian(): void
+    public function testWriteFirstThreeFloatingPointBigEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
-            ->write(Integer::class, 0xa0b0c0d0)
-            ->write(Integer::class, 0xa1b1c1d1)
-            ->write(Integer::class, 0xa2b2c2d2)
+            ->write(FloatingPoint::class, 1234.5678)
+            ->write(FloatingPoint::class, 13.37)
+            ->write(FloatingPoint::class, 100)
             ->save();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $byteArray);
-        static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
+        static::assertEquals([1234.5677490234375, 13.369999885559082, 100.0], $byteArray);
     }
 
     /**
@@ -153,24 +153,24 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeIntegerWithArrayBigEndian(): void
+    public function testWriteFirstThreeFloatingPointWithArrayBigEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
-            ->writeArray(Integer::class, [0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2])
+            ->writeArray(FloatingPoint::class, [1234.5678, 13.37, 100])
             ->save();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
-            ->readArray(Integer::class, 3)
-            ->returnBuffer();
+            ->readArray(FloatingPoint::class, 3)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $byteArray);
-        static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
+        static::assertEquals([1234.5677490234375, 13.369999885559082, 100.0], $byteArray);
     }
 
     /**
@@ -181,17 +181,17 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstSingleIntegerLittleEndian(): void
+    public function testReadFirstSingleFloatingPointLittleEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->setEndian(LittleEndian::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(1, $int);
-        static::assertEquals([857870592], $int);
+        static::assertEquals([3.773402568185702E-8], $int);
     }
 
     /**
@@ -202,19 +202,19 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeIntegerLittleEndian(): void
+    public function testReadFirstThreeFloatingPointLittleEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->setEndian(LittleEndian::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $int);
-        static::assertEquals([857870592, 2003195204, 3148519816], $int);
+        static::assertEquals([3.773402568185702E-8, 4.6717096476342645E+33, -0.005206290632486343], $int);
     }
 
     /**
@@ -225,17 +225,17 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeIntegerWithArrayLittleEndian(): void
+    public function testReadFirstThreeFloatingPointWithArrayLittleEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $int = $binaryUtility
             ->setFile($this->binaryFile)
             ->setEndian(LittleEndian::class)
-            ->readArray(Integer::class, 3)
-            ->returnBuffer();
+            ->readArray(FloatingPoint::class, 3)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $int);
-        static::assertEquals([857870592, 2003195204, 3148519816], $int);
+        static::assertEquals([3.773402568185702E-8, 4.6717096476342645E+33, -0.005206290632486343], $int);
     }
 
     /**
@@ -246,7 +246,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstSingleIntegerLittleEndian(): void
+    public function testWriteFirstSingleFloatingPointLittleEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -254,28 +254,28 @@ class IntegerTest extends BinaryUtilitiesTest
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
-            ->write(Integer::class, 0xa0b0c0d0)
+            ->write(FloatingPoint::class, 1234.5678)
             ->save();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(1, $byteArray);
-        static::assertEquals([0xa0b0c0d0], $byteArray);
+        static::assertEquals([1234.5677490234375], $byteArray);
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(BigEndian::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(1, $byteArray);
-        static::assertEquals([0xd0c0b0a0], $byteArray);
+        static::assertEquals([7.482107381578951E-13], $byteArray);
     }
 
     /**
@@ -286,7 +286,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeIntegerLittleEndian(): void
+    public function testWriteFirstThreeFloatingPointLittleEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -294,34 +294,34 @@ class IntegerTest extends BinaryUtilitiesTest
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
-            ->write(Integer::class, 0xa0b0c0d0)
-            ->write(Integer::class, 0xa1b1c1d1)
-            ->write(Integer::class, 0xa2b2c2d2)
+            ->write(FloatingPoint::class, 1234.5678)
+            ->write(FloatingPoint::class, 13.37)
+            ->write(FloatingPoint::class, 100)
             ->save();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $byteArray);
-        static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
+        static::assertEquals([1234.5677490234375, 13.369999885559082, 100.0], $byteArray);
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(BigEndian::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->read(Integer::class)
-            ->returnBuffer();
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->read(FloatingPoint::class)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $byteArray);
-        static::assertEquals([0xd0c0b0a0, 0xd1c1b1a1, 0xd2c2b2a2], $byteArray);
+        static::assertEquals([7.482107381578951E-13, -2.2130611134578508E-35, 7.183896707207607E-41], $byteArray);
     }
 
     /**
@@ -332,7 +332,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeIntegerWithArrayLittleEndian(): void
+    public function testWriteFirstThreeFloatingPointWithArrayLittleEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -340,27 +340,27 @@ class IntegerTest extends BinaryUtilitiesTest
         $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
-            ->writeArray(Integer::class, [0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2])
+            ->writeArray(FloatingPoint::class, [1234.5678, 13.37, 100])
             ->save();
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(LittleEndian::class)
-            ->readArray(Integer::class, 3)
-            ->returnBuffer();
+            ->readArray(FloatingPoint::class, 3)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $byteArray);
-        static::assertEquals([0xa0b0c0d0, 0xa1b1c1d1, 0xa2b2c2d2], $byteArray);
+        static::assertEquals([1234.5677490234375, 13.369999885559082, 100.0], $byteArray);
 
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($binaryFileCopy)
             ->setEndian(BigEndian::class)
-            ->readArray(Integer::class, 3)
-            ->returnBuffer();
+            ->readArray(FloatingPoint::class, 3)
+            ->returnBuffer(true, false);
 
         static::assertCount(3, $byteArray);
-        static::assertEquals([0xd0c0b0a0, 0xd1c1b1a1, 0xd2c2b2a2], $byteArray);
+        static::assertEquals([7.482107381578951E-13, -2.2130611134578508E-35, 7.183896707207607E-41], $byteArray);
     }
 }

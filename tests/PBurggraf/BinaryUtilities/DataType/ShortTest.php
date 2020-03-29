@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
-use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Short;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
@@ -30,7 +29,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      */
-    public function testReadFirstSingleShortBigEndian()
+    public function testReadFirstSingleShortBigEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
 
@@ -51,7 +50,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeShortBigEndian()
+    public function testReadFirstThreeShortBigEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $short = $binaryUtility
@@ -73,7 +72,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeShortWithArrayBigEndian()
+    public function testReadFirstThreeShortWithArrayBigEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $short = $binaryUtility
@@ -93,7 +92,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstSingleShortBigEndian()
+    public function testWriteFirstSingleShortBigEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -121,7 +120,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeShortBigEndian()
+    public function testWriteFirstThreeShortBigEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -153,7 +152,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadShortLittleEndian()
+    public function testReadShortLittleEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $short = $binaryUtility
@@ -174,7 +173,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeShortLittleEndian()
+    public function testReadFirstThreeShortLittleEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $short = $binaryUtility
@@ -197,7 +196,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeShortWithArrayLittleEndian()
+    public function testReadFirstThreeShortWithArrayLittleEndian(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $short = $binaryUtility
@@ -218,7 +217,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstSingleShortLittleEndian()
+    public function testWriteFirstSingleShortLittleEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -258,7 +257,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeShortLittleEndian()
+    public function testWriteFirstThreeShortLittleEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -307,7 +306,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeShortWithArrayBigEndian()
+    public function testWriteFirstThreeShortWithArrayBigEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -335,7 +334,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeShortWithArrayLittleEndian()
+    public function testWriteFirstThreeShortWithArrayLittleEndian(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 

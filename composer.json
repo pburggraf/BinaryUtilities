@@ -18,12 +18,17 @@
       "PBurggraf\\BinaryUtilities\\Test\\": "tests/PBurggraf/BinaryUtilities/"
     }
   },
+  "config": {
+    "platform": {
+      "php": "7.2.30"
+    }
+  },
   "require": {
-    "php": ">=7.1"
+    "php": ">=7.2"
   },
   "require-dev": {
-    "phpunit/phpunit": "~7.0",
+    "phpunit/phpunit": "~8.5",
     "mikey179/vfsstream": "^1.6",
-    "phpstan/phpstan": "^0.11"
+    "phpstan/phpstan": "^0.12"
   }
 }

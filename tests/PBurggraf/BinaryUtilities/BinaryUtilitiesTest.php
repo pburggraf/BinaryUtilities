@@ -8,9 +8,10 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
-use PBurggraf\BinaryUtilities\DataType\Byte;
 use PBurggraf\BinaryUtilities\DataType\Integer;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\FileErrorException;
+use PBurggraf\BinaryUtilities\Exception\FileNotAccessableException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,7 +32,7 @@ class BinaryUtilitiesTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->virtualFileSystem = vfsStream::setup();
         $virtualFile = vfsStream::newFile('data.bin')
@@ -43,8 +44,10 @@ class BinaryUtilitiesTest extends TestCase
 
     /**
      * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      */
-    public function testReadNonExistingFile()
+    public function testReadNonExistingFile(): void
     {
         $this->expectException(FileDoesNotExistsException::class);
 
@@ -52,7 +55,7 @@ class BinaryUtilitiesTest extends TestCase
         $binaryUtility->setFile('nonExistingFile.bin');
     }
 
-    public function testBinaryBaseMethod()
+    public function testBinaryBaseMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
@@ -66,7 +69,7 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals(['11111111111011101101110111001100'], $byteArray);
     }
 
-    public function testOctalBaseMethod()
+    public function testOctalBaseMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
@@ -80,7 +83,7 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals(['211256034606'], $byteArray);
     }
 
-    public function testHexadecimalBaseMethod()
+    public function testHexadecimalBaseMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
@@ -94,7 +97,7 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals(['ffeeddcc'], $byteArray);
     }
 
-    public function testQuickReadMethod()
+    public function testQuickReadMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility

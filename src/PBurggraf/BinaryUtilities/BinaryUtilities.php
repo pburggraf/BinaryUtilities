@@ -72,9 +72,9 @@ class BinaryUtilities
     /**
      * @param string $file
      *
+     * @throws FileNotAccessableException
      * @throws FileDoesNotExistsException
      * @throws FileErrorException
-     * @throws FileNotAccessableException
      *
      * @return BinaryUtilities
      */
@@ -84,7 +84,7 @@ class BinaryUtilities
             throw new FileDoesNotExistsException();
         }
         $this->file = $file;
-        $this->setContent();
+        $this->setData();
 
         return $this;
     }
@@ -127,10 +127,11 @@ class BinaryUtilities
 
     /**
      * @param bool $clearBuffer
+     * @param bool $applyConvertToBase
      *
      * @return array
      */
-    public function returnBuffer(bool $clearBuffer = true): array
+    public function returnBuffer(bool $clearBuffer = true, bool $applyConvertToBase = true): array
     {
         $buffer = $this->buffer;
 
@@ -138,46 +139,52 @@ class BinaryUtilities
             $this->buffer = [];
         }
 
-        return array_map([$this, 'convertToBase'], $buffer);
+        if ($applyConvertToBase === true) {
+            return array_map([$this, 'convertToBase'], $buffer);
+        }
+
+        return $buffer;
     }
 
     /**
      * @param string $dataClass
-     * @param bool $clearBuffer
+     * @param bool   $clearBuffer
+     * @param bool   $applyConvertToBase
      *
+     * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
-     * @throws InvalidDataTypeException
      *
      * @return string
      */
-    public function readReturn(string $dataClass, bool $clearBuffer = true): string
+    public function readReturn(string $dataClass, bool $clearBuffer = true, bool $applyConvertToBase = true): string
     {
-        return $this->read($dataClass)->returnBuffer($clearBuffer)[0];
+        return $this->read($dataClass)->returnBuffer($clearBuffer, $applyConvertToBase)[0];
     }
 
     /**
-     * @param int $offset
+     * @param int    $offset
      * @param string $dataClass
-     * @param bool $clearBuffer
+     * @param bool   $clearBuffer
+     * @param bool   $applyConvertToBase
      *
+     * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
-     * @throws InvalidDataTypeException
      *
      * @return string
      */
-    public function readAndReturnFromOffset(int $offset, string $dataClass, bool $clearBuffer = true): string
+    public function readAndReturnFromOffset(int $offset, string $dataClass, bool $clearBuffer = true, bool $applyConvertToBase = true): string
     {
-        return $this->offset($offset)->readReturn($dataClass, $clearBuffer);
+        return $this->offset($offset)->readReturn($dataClass, $clearBuffer, $applyConvertToBase);
     }
 
     /**
      * @param string $dataClass
      *
+     * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
-     * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
      */
@@ -198,11 +205,11 @@ class BinaryUtilities
 
     /**
      * @param string $dataClass
-     * @param int $length
+     * @param int    $length
      *
+     * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
-     * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
      */
@@ -222,16 +229,16 @@ class BinaryUtilities
     }
 
     /**
-     * @param string $dataClass
-     * @param int $data
+     * @param string           $dataClass
+     * @param string|float|int $data
      *
+     * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
-     * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
      */
-    public function write(string $dataClass, int $data): BinaryUtilities
+    public function write(string $dataClass, $data): BinaryUtilities
     {
         $dataType = $this->getDataType($dataClass);
 
@@ -249,11 +256,11 @@ class BinaryUtilities
 
     /**
      * @param string $dataClass
-     * @param array $data
+     * @param array  $data
      *
+     * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
      * @throws EndianTypeDoesNotExistsException
-     * @throws InvalidDataTypeException
      *
      * @return BinaryUtilities
      */
@@ -318,7 +325,7 @@ class BinaryUtilities
     }
 
     /**
-     * @param null|string $entianType
+     * @param string|null $entianType
      *
      * @throws EndianTypeDoesNotExistsException
      *
@@ -351,7 +358,7 @@ class BinaryUtilities
      * @throws FileErrorException
      * @throws FileNotAccessableException
      */
-    private function setContent(): void
+    private function setData(): void
     {
         $this->currentBit = 0;
         $this->offset = 0;

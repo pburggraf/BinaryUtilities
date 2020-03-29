@@ -6,7 +6,13 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         'concat_space' => false,
         'phpdoc_order' => true,
+        'phpdoc_separation' => true,
+        'no_superfluous_phpdoc_tags' => false,
         'cast_spaces' => true,
+        'yoda_style' => false,
+        'phpdoc_types_order' => [
+            'null_adjustment' => 'always_last',
+        ],
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()

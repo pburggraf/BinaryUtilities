@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PBurggraf\BinaryUtilities\Test\DataType;
 
-use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Byte;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
@@ -29,7 +28,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstSingleByte()
+    public function testReadFirstSingleByte(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
@@ -49,7 +48,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      */
-    public function testReadFirstThreeBytes()
+    public function testReadFirstThreeBytes(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
@@ -71,7 +70,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadFirstThreeBytesWithArray()
+    public function testReadFirstThreeBytesWithArray(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
@@ -91,7 +90,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstSingleByte()
+    public function testWriteFirstSingleByte(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -119,7 +118,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeBytes()
+    public function testWriteFirstThreeBytes(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -151,7 +150,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteFirstThreeBytesWithArray()
+    public function testWriteFirstThreeBytesWithArray(): void
     {
         $binaryFileCopy = $this->bootstrapWriteableFile();
 
@@ -179,7 +178,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadOverEndOfFile()
+    public function testReadOverEndOfFile(): void
     {
         $this->expectException(EndOfFileReachedException::class);
 
@@ -199,7 +198,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testReadOverEndOfFileWithArray()
+    public function testReadOverEndOfFileWithArray(): void
     {
         $this->expectException(EndOfFileReachedException::class);
 
@@ -218,7 +217,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteOverEndOfFile()
+    public function testWriteOverEndOfFile(): void
     {
         $this->expectException(EndOfFileReachedException::class);
 
@@ -241,7 +240,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
      */
-    public function testWriteOverEndOfFileWithArray()
+    public function testWriteOverEndOfFileWithArray(): void
     {
         $this->expectException(EndOfFileReachedException::class);
 
