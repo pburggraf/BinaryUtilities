@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PBurggraf\BinaryUtilities\DataType;
 
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
+use PBurggraf\BinaryUtilities\Exception\InvalidByteSequenceException;
 
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
@@ -12,9 +13,10 @@ use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
 class FloatingPoint extends AbstractDataType
 {
     /**
-     * @return array
      * @throws EndOfFileReachedException
+     * @throws InvalidByteSequenceException
      *
+     * @return array
      */
     public function read(): array
     {
@@ -39,9 +41,10 @@ class FloatingPoint extends AbstractDataType
     /**
      * @param int $length
      *
-     * @return array
      * @throws EndOfFileReachedException
+     * @throws InvalidByteSequenceException
      *
+     * @return array
      */
     public function readArray(int $length): array
     {
@@ -70,6 +73,8 @@ class FloatingPoint extends AbstractDataType
     /**
      * @param array $data
      *
+     * @throws InvalidByteSequenceException
+     *
      * @return float
      */
     private function mergeBytes(array $data): float
@@ -79,14 +84,14 @@ class FloatingPoint extends AbstractDataType
         $result = unpack('G', $string);
 
         if (is_array($result) === false) {
-            throw new \Exception();
+            throw new InvalidByteSequenceException();
         }
 
         return $result[1];
     }
 
     /**
-     * @param int|float $data
+     * @param float|int $data
      *
      * @throws EndOfFileReachedException
      */
@@ -135,12 +140,11 @@ class FloatingPoint extends AbstractDataType
 
             $this->assertNotEndOfFile();
             $this->setByte($this->offset++, $bytes[3]);
-
         }
     }
 
     /**
-     * @param int|float $data
+     * @param float|int $data
      *
      * @return array
      */

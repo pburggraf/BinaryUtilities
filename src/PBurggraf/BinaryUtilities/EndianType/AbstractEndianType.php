@@ -9,5 +9,10 @@ namespace PBurggraf\BinaryUtilities\EndianType;
  */
 abstract class AbstractEndianType
 {
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
     abstract public function applyEndianess(array $data): array;
 }

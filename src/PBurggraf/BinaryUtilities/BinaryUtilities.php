@@ -7,6 +7,7 @@ namespace PBurggraf\BinaryUtilities;
 use PBurggraf\BinaryUtilities\DataType\AbstractDataType;
 use PBurggraf\BinaryUtilities\EndianType\AbstractEndianType;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
+use PBurggraf\BinaryUtilities\Exception\ContentOnlyException;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
@@ -25,7 +26,7 @@ class BinaryUtilities
     public const BASE_HEXADECIMAL = 16;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $file;
 
@@ -72,9 +73,10 @@ class BinaryUtilities
     /**
      * @param string $file
      *
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
      * @throws FileNotAccessableException
      * @throws FileDoesNotExistsException
-     * @throws FileErrorException
      *
      * @return BinaryUtilities
      */
@@ -83,8 +85,47 @@ class BinaryUtilities
         if (!file_exists($file)) {
             throw new FileDoesNotExistsException();
         }
+
         $this->file = $file;
-        $this->setData();
+
+        $filesize = filesize($this->file);
+
+        if ($filesize === false) {
+            throw new FileErrorException();
+        }
+
+        $this->endOfFile = $filesize;
+        $handle = fopen($this->file, 'rb');
+
+        if ($handle === false) {
+            throw new FileNotAccessableException();
+        }
+
+        $content = fread($handle, $this->endOfFile);
+
+        if ($content === false) {
+            throw new FileErrorException();
+        }
+
+        $this->setData($content);
+
+        fclose($handle);
+
+        return $this;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return BinaryUtilities
+     */
+    public function setContent(string $content): BinaryUtilities
+    {
+        $this->file = null;
+
+        $this->endOfFile = strlen($content);
+
+        $this->setData($content);
 
         return $this;
     }
@@ -106,11 +147,33 @@ class BinaryUtilities
      *
      * @return BinaryUtilities
      */
-    public function offset(int $offset): BinaryUtilities
+    public function setOffset(int $offset): BinaryUtilities
     {
         $this->offset = $offset;
 
         return $this;
+    }
+
+    /**
+     * @param int $offset
+     *
+     * @return BinaryUtilities
+     *
+     * @deprecated since v0.5.0, use "setOffset" instead
+     */
+    public function offset(int $offset): BinaryUtilities
+    {
+        @trigger_error(sprintf('The "%s()" method is deprecated since v0.5.0, use "setOffset" instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return $this->setOffset($offset);
+    }
+
+    /**
+     * @return int
+     */
+    public function returnOffset(): int
+    {
+        return $this->offset;
     }
 
     /**
@@ -151,9 +214,9 @@ class BinaryUtilities
      * @param bool   $clearBuffer
      * @param bool   $applyConvertToBase
      *
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
-     * @throws EndianTypeDoesNotExistsException
      *
      * @return string
      */
@@ -168,23 +231,23 @@ class BinaryUtilities
      * @param bool   $clearBuffer
      * @param bool   $applyConvertToBase
      *
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
-     * @throws EndianTypeDoesNotExistsException
      *
      * @return string
      */
     public function readAndReturnFromOffset(int $offset, string $dataClass, bool $clearBuffer = true, bool $applyConvertToBase = true): string
     {
-        return $this->offset($offset)->readReturn($dataClass, $clearBuffer, $applyConvertToBase);
+        return $this->setOffset($offset)->readReturn($dataClass, $clearBuffer, $applyConvertToBase);
     }
 
     /**
      * @param string $dataClass
      *
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
-     * @throws EndianTypeDoesNotExistsException
      *
      * @return BinaryUtilities
      */
@@ -207,9 +270,9 @@ class BinaryUtilities
      * @param string $dataClass
      * @param int    $length
      *
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
-     * @throws EndianTypeDoesNotExistsException
      *
      * @return BinaryUtilities
      */
@@ -230,11 +293,11 @@ class BinaryUtilities
 
     /**
      * @param string           $dataClass
-     * @param string|float|int $data
+     * @param float|int|string $data
      *
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
-     * @throws EndianTypeDoesNotExistsException
      *
      * @return BinaryUtilities
      */
@@ -258,9 +321,9 @@ class BinaryUtilities
      * @param string $dataClass
      * @param array  $data
      *
+     * @throws EndianTypeDoesNotExistsException
      * @throws InvalidDataTypeException
      * @throws DataTypeDoesNotExistsException
-     * @throws EndianTypeDoesNotExistsException
      *
      * @return BinaryUtilities
      */
@@ -281,10 +344,15 @@ class BinaryUtilities
     }
 
     /**
+     * @throws ContentOnlyException
      * @throws FileNotAccessableException
      */
     public function save(): void
     {
+        if ($this->file === null) {
+            throw new ContentOnlyException();
+        }
+
         $handle = fopen($this->file, 'wb');
 
         if ($handle === false) {
@@ -310,7 +378,7 @@ class BinaryUtilities
         }
 
         if (array_key_exists($dataClass, $this->dataTypeClasses)) {
-            /** @var AbstractDataType $dataType */
+            /** @var AbstractDataType $type */
             $type = $this->dataTypeClasses[$dataClass];
         } else {
             /** @var AbstractDataType $type */
@@ -319,6 +387,8 @@ class BinaryUtilities
             if (!$type instanceof AbstractDataType) {
                 throw new InvalidDataTypeException();
             }
+
+            $this->dataTypeClasses[$dataClass] = $type;
         }
 
         return $type;
@@ -355,34 +425,12 @@ class BinaryUtilities
     }
 
     /**
-     * @throws FileErrorException
-     * @throws FileNotAccessableException
+     * @param string $content
      */
-    private function setData(): void
+    private function setData(string $content): void
     {
         $this->currentBit = 0;
         $this->offset = 0;
-
-        $filesize = filesize($this->file);
-
-        if ($filesize === false) {
-            throw new FileErrorException();
-        }
-
-        $this->endOfFile = $filesize;
-        $handle = fopen($this->file, 'rb');
-
-        if ($handle === false) {
-            throw new FileNotAccessableException();
-        }
-
-        $content = fread($handle, $this->endOfFile);
-
-        if ($content === false) {
-            throw new FileErrorException();
-        }
-
         $this->content = $content;
-        fclose($handle);
     }
 }

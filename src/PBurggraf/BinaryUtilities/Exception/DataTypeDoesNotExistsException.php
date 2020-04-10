@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace PBurggraf\BinaryUtilities\Exception;
 
+use Exception;
+
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
  */
-class DataTypeDoesNotExistsException extends \Exception
+class DataTypeDoesNotExistsException extends Exception
 {
 }

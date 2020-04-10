@@ -8,6 +8,7 @@ use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Integer;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
 use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
+use PBurggraf\BinaryUtilities\Exception\ContentOnlyException;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
@@ -90,6 +91,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstSingleIntegerBigEndian(): void
     {
@@ -120,6 +122,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeIntegerBigEndian(): void
     {
@@ -152,6 +155,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeIntegerWithArrayBigEndian(): void
     {
@@ -245,6 +249,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstSingleIntegerLittleEndian(): void
     {
@@ -285,6 +290,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeIntegerLittleEndian(): void
     {
@@ -331,6 +337,7 @@ class IntegerTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeIntegerWithArrayLittleEndian(): void
     {

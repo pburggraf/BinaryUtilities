@@ -9,9 +9,12 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use PBurggraf\BinaryUtilities\BinaryUtilities;
 use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Integer;
+use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
+use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileErrorException;
 use PBurggraf\BinaryUtilities\Exception\FileNotAccessableException;
+use PBurggraf\BinaryUtilities\Exception\InvalidDataTypeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,7 +40,7 @@ class BinaryUtilitiesTest extends TestCase
         $this->virtualFileSystem = vfsStream::setup();
         $virtualFile = vfsStream::newFile('data.bin')
             ->at($this->virtualFileSystem)
-            ->setContent(base64_decode('ABEiM0RVZneImaq7zN3u///u3cy7qpmId2ZVRDMiEQABAgQIECBAgA=='));
+            ->setContent((string) hex2bin('00112233445566778899aabbccddeeffffeeddccbbaa998877665544332211000102040810204080'));
 
         $this->binaryFile = $virtualFile->url();
     }
@@ -55,12 +58,20 @@ class BinaryUtilitiesTest extends TestCase
         $binaryUtility->setFile('nonExistingFile.bin');
     }
 
+    /**
+     * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
     public function testBinaryBaseMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($this->binaryFile)
-            ->offset(0x10)
+            ->setOffset(0x10)
             ->read(Integer::class)
             ->setBase(BinaryUtilities::BASE_BINARY)
             ->returnBuffer();
@@ -69,12 +80,20 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals(['11111111111011101101110111001100'], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
+     * @throws InvalidDataTypeException
+     */
     public function testOctalBaseMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($this->binaryFile)
-            ->offset(0x10)
+            ->setOffset(0x10)
             ->read(Integer::class)
             ->setBase(BinaryUtilities::BASE_OCTAL)
             ->returnBuffer();
@@ -83,12 +102,20 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals(['211256034606'], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
+     * @throws InvalidDataTypeException
+     */
     public function testHexadecimalBaseMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
         $byteArray = $binaryUtility
             ->setFile($this->binaryFile)
-            ->offset(0x10)
+            ->setOffset(0x10)
             ->read(Integer::class)
             ->setBase(BinaryUtilities::BASE_HEXADECIMAL)
             ->returnBuffer();
@@ -97,6 +124,14 @@ class BinaryUtilitiesTest extends TestCase
         static::assertEquals(['ffeeddcc'], $byteArray);
     }
 
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws FileDoesNotExistsException
+     * @throws FileErrorException
+     * @throws FileNotAccessableException
+     * @throws InvalidDataTypeException
+     */
     public function testQuickReadMethod(): void
     {
         $binaryUtility = BinaryUtilityFactory::create();
@@ -105,6 +140,26 @@ class BinaryUtilitiesTest extends TestCase
             ->readAndReturnFromOffset(0x10, Integer::class);
 
         static::assertEquals('4293844428', $byteArray);
+    }
+
+    /**
+     * @throws DataTypeDoesNotExistsException
+     * @throws EndianTypeDoesNotExistsException
+     * @throws InvalidDataTypeException
+     */
+    public function testSetContentMethod(): void
+    {
+        $binaryUtility = BinaryUtilityFactory::create();
+
+        $byteArray = $binaryUtility
+            ->setContent((string) hex2bin('00112233445566778899aabbccddeeffffeeddccbbaa998877665544332211000102040810204080'))
+            ->setOffset(0x10)
+            ->read(Integer::class)
+            ->setBase(BinaryUtilities::BASE_BINARY)
+            ->returnBuffer();
+
+        static::assertCount(1, $byteArray);
+        static::assertEquals(['11111111111011101101110111001100'], $byteArray);
     }
 
     /**

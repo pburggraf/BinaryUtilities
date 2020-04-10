@@ -8,6 +8,7 @@ use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Short;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
 use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
+use PBurggraf\BinaryUtilities\Exception\ContentOnlyException;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
@@ -91,6 +92,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstSingleShortBigEndian(): void
     {
@@ -119,6 +121,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeShortBigEndian(): void
     {
@@ -216,6 +219,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstSingleShortLittleEndian(): void
     {
@@ -256,6 +260,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeShortLittleEndian(): void
     {
@@ -305,6 +310,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeShortWithArrayBigEndian(): void
     {
@@ -333,6 +339,7 @@ class ShortTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeShortWithArrayLittleEndian(): void
     {

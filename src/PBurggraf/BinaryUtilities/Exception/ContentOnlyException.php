@@ -9,6 +9,6 @@ use Exception;
 /**
  * @author Philip Burggraf <philip@pburggraf.de>
  */
-class InvalidDataTypeException extends Exception
+class ContentOnlyException extends Exception
 {
 }

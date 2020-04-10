@@ -9,6 +9,9 @@ namespace PBurggraf\BinaryUtilities;
  */
 class BinaryUtilityFactory
 {
+    /**
+     * @return BinaryUtilities
+     */
     public static function create(): BinaryUtilities
     {
         return new BinaryUtilities();

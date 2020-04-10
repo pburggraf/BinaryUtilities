@@ -6,6 +6,7 @@ namespace PBurggraf\BinaryUtilities\Test\DataType;
 
 use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\Byte;
+use PBurggraf\BinaryUtilities\Exception\ContentOnlyException;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndOfFileReachedException;
@@ -89,6 +90,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstSingleByte(): void
     {
@@ -117,6 +119,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeBytes(): void
     {
@@ -149,6 +152,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeBytesWithArray(): void
     {
@@ -185,7 +189,7 @@ class ByteTest extends BinaryUtilitiesTest
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($this->binaryFile)
-            ->offset(40)
+            ->setOffset(40)
             ->read(Byte::class)
             ->read(Byte::class);
     }
@@ -205,7 +209,7 @@ class ByteTest extends BinaryUtilitiesTest
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($this->binaryFile)
-            ->offset(40)
+            ->setOffset(40)
             ->readArray(Byte::class, 2);
     }
 
@@ -216,6 +220,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteOverEndOfFile(): void
     {
@@ -226,7 +231,7 @@ class ByteTest extends BinaryUtilitiesTest
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
-            ->offset(40)
+            ->setOffset(40)
             ->write(Byte::class, 160)
             ->write(Byte::class, 161)
             ->save();
@@ -239,6 +244,7 @@ class ByteTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteOverEndOfFileWithArray(): void
     {
@@ -249,7 +255,7 @@ class ByteTest extends BinaryUtilitiesTest
         $binaryUtility = BinaryUtilityFactory::create();
         $binaryUtility
             ->setFile($binaryFileCopy)
-            ->offset(40)
+            ->setOffset(40)
             ->writeArray(Byte::class, [160, 161])
             ->save();
     }

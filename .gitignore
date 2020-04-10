@@ -44,5 +44,6 @@ fabric.properties
 /phpunit.xml
 /build/
 /composer.phar
+/php-cs-fixer.phar
 */Entity/*~
 .php_cs.cache

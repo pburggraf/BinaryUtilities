@@ -107,7 +107,6 @@ class Short extends AbstractDataType
 
             $this->assertNotEndOfFile();
             $this->setByte($this->offset++, $bytes[1]);
-
         }
     }
 

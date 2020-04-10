@@ -8,6 +8,7 @@ use PBurggraf\BinaryUtilities\BinaryUtilityFactory;
 use PBurggraf\BinaryUtilities\DataType\FloatingPoint;
 use PBurggraf\BinaryUtilities\EndianType\BigEndian;
 use PBurggraf\BinaryUtilities\EndianType\LittleEndian;
+use PBurggraf\BinaryUtilities\Exception\ContentOnlyException;
 use PBurggraf\BinaryUtilities\Exception\DataTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\EndianTypeDoesNotExistsException;
 use PBurggraf\BinaryUtilities\Exception\FileDoesNotExistsException;
@@ -90,6 +91,7 @@ class FloatingPointTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstSingleFloatingPointBigEndian(): void
     {
@@ -120,6 +122,7 @@ class FloatingPointTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeFloatingPointBigEndian(): void
     {
@@ -152,6 +155,7 @@ class FloatingPointTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeFloatingPointWithArrayBigEndian(): void
     {
@@ -245,6 +249,7 @@ class FloatingPointTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstSingleFloatingPointLittleEndian(): void
     {
@@ -285,6 +290,7 @@ class FloatingPointTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeFloatingPointLittleEndian(): void
     {
@@ -331,6 +337,7 @@ class FloatingPointTest extends BinaryUtilitiesTest
      * @throws FileErrorException
      * @throws FileNotAccessableException
      * @throws InvalidDataTypeException
+     * @throws ContentOnlyException
      */
     public function testWriteFirstThreeFloatingPointWithArrayLittleEndian(): void
     {
