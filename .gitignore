@@ -47,3 +47,4 @@ fabric.properties
 /php-cs-fixer.phar
 */Entity/*~
 .php_cs.cache
+.phpunit.result.cache

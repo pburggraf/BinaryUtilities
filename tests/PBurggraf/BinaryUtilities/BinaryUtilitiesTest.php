@@ -35,7 +35,7 @@ class BinaryUtilitiesTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->virtualFileSystem = vfsStream::setup();
         $virtualFile = vfsStream::newFile('data.bin')
